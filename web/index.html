@@ -38,7 +38,7 @@
       </div>
 
       <div class="image-mask" id="imageMask">
-        <img src="assets/ocean_terrace_hero.jpg" alt="Ocean Terrace Residences" class="hero-image" id="heroImg">
+        <img src="assets/ocean_terrace_hero.png" alt="Ocean Terrace Residences" class="hero-image" id="heroImg">
         <div class="image-scrim"></div>
       </div>
     </div>
@@ -52,17 +52,7 @@
       </h2>
     </div>
 
-    <!-- Liquidmorphic Enter Button (Right Side Above Replay) -->
-    <div class="floating-enter-container" id="floatingEnterContainer">
-      <button class="liquid-enter-btn" id="enterBtn">
-        <span class="liquid-glass-glare"></span>
-        <span class="golden-light-text">ENTER</span>
-        <svg class="enter-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </button>
-    </div>
+
 
     <!-- ==========================================================================
          MAIN EXPLORATION VIEW (Triggered on ENTER button click)
@@ -157,58 +147,35 @@
         </div>
       </aside>
 
-      <!-- Bottom Gallery Dock -->
+      <!-- Bottom Gallery Dock with Small Dots and Arrow Controls -->
       <div class="bottom-gallery-dock" id="bottomGalleryDock">
-        <div class="gallery-dock-glass">
-          <div class="gallery-thumb active" data-bg="assets/ocean_terrace_hero.jpg">
-            <img src="assets/ocean_terrace_hero.jpg" alt="Terrace">
+        <div class="carousel-nav-container">
+          <!-- Left Arrow Button -->
+          <button class="carousel-arrow prev-btn" id="carouselPrevBtn" title="Previous Visual" aria-label="Previous Slide">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <!-- Small Minimalist Dots -->
+          <div class="carousel-dots-track" id="carouselDotsTrack">
+            <button class="carousel-dot active" data-index="0" aria-label="Slide 1"></button>
+            <button class="carousel-dot" data-index="1" aria-label="Slide 2"></button>
+            <button class="carousel-dot" data-index="2" aria-label="Slide 3"></button>
+            <button class="carousel-dot" data-index="3" aria-label="Slide 4"></button>
+            <button class="carousel-dot" data-index="4" aria-label="Slide 5"></button>
           </div>
-          <div class="gallery-thumb" data-bg="assets/versova-coast.jpg">
-            <img src="assets/versova-coast.jpg" alt="Coastline Sunset">
-          </div>
-          <div class="gallery-thumb" data-bg="assets/living-room.jpg">
-            <img src="assets/living-room.jpg" alt="Living Room">
-          </div>
-          <div class="gallery-thumb" data-bg="assets/hero-bg.png">
-            <img src="assets/hero-bg.png" alt="High-Rise Tower">
-          </div>
+
+          <!-- Right Arrow Button -->
+          <button class="carousel-arrow next-btn" id="carouselNextBtn" title="Next Visual" aria-label="Next Slide">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
         </div>
 
-        <a href="#homes" class="explore-homes-link">
-          <span>Now Explore Homes</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </a>
       </div>
 
-      <!-- Back to Hero Intro Button -->
-      <button class="back-hero-btn" id="backHeroBtn" title="Back to Intro View">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        <span>INTRO</span>
-      </button>
-
-    </div>
-
-    <!-- Wave Style Selector & Replay Controls (Intro View) -->
-    <div class="controls-panel" id="controlsPanel">
-      <div class="style-switcher">
-        <span class="switcher-label">Wave Style:</span>
-        <button class="style-btn" data-style="1">1. Fluid Ribbon</button>
-        <button class="style-btn" data-style="2">2. Live Visualizer</button>
-        <button class="style-btn active" data-style="3">3. Concentric Ripples</button>
-        <button class="style-btn" data-style="4">4. Magnetic Cursor Wave</button>
-        <button class="style-btn" data-style="5">5. Sunset Glow Wave</button>
-        <button class="style-btn" data-style="6">6. Ocean Foam Particles</button>
-        <button class="style-btn" data-style="7">7. Nautilus Spiral</button>
-        <button class="style-btn" data-style="8">8. Bioluminescent Ocean</button>
-        <button class="style-btn" data-style="9">9. Coastal Tidal Swell</button>
-      </div>
-      <button class="replay-btn" id="replayBtn" title="Replay Animation">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
-        </svg>
-        <span>REPLAY</span>
-      </button>
     </div>
   </div>
 

@@ -508,7 +508,10 @@ document.addEventListener('DOMContentLoaded', () => {
     imageMask.classList.remove('circle-preview', 'expanded-fullscreen');
     radiatingAura.classList.remove('active', 'fade-out');
     heroContent.classList.remove('revealed');
-    controlsPanel.classList.remove('visible');
+    if (controlsPanel) controlsPanel.classList.remove('visible');
+    if (heroImg) {
+      heroImg.src = 'assets/ocean_terrace_hero.png';
+    }
 
     // STEP 1: Big orig.avif Logo Fades in at Center
     animationTimeouts.push(setTimeout(() => {
@@ -547,69 +550,144 @@ document.addEventListener('DOMContentLoaded', () => {
       brandHeader.classList.add('mode-fullscreen');
     }, 7800));
 
-    // STEP 7: Reveal Center Headline Typography (Slow One-By-One Reveal)
+    // STEP 7: Reveal Center Headline Typography (Line 1 -> Line 2 -> Line 3)
     animationTimeouts.push(setTimeout(() => {
       heroContent.classList.add('revealed');
     }, 8800));
 
-    // STEP 8: Reveal Liquidmorphic Enter Button on Right Side & Controls Panel
+    // STEP 8: Exactly 1 second after line 3 ("CINEMATIC OCEAN VISTAS") appears, transition to 2nd image page
+    const line3 = document.querySelector('.hero-headline .line-3');
+    if (line3) {
+      const onLine3Revealed = (e) => {
+        if (e.propertyName === 'opacity') {
+          line3.removeEventListener('transitionend', onLine3Revealed);
+          animationTimeouts.push(setTimeout(() => {
+            openExploreView();
+          }, 1000));
+        }
+      };
+      line3.addEventListener('transitionend', onLine3Revealed);
+    }
+
+    // Safety fallback timeout in case transitionend is skipped
     animationTimeouts.push(setTimeout(() => {
-      if (floatingEnterContainer) floatingEnterContainer.classList.add('visible');
-      controlsPanel.classList.add('visible');
-    }, 12500));
+      openExploreView();
+    }, 14800));
   }
 
   // --------------------------------------------------------------------------
   // EXPLORATION VIEW TRANSITION (TRIGGERED ON ENTER CLICK)
   // --------------------------------------------------------------------------
-  const stage = document.getElementById('stage');
-  const mainExploreView = document.getElementById('mainExploreView');
-  const enterBtn = document.getElementById('enterBtn');
-  const backHeroBtn = document.getElementById('backHeroBtn');
-  const galleryThumbs = document.querySelectorAll('.gallery-thumb');
-  const heroImg = document.getElementById('heroImg');
-  const dockItems = document.querySelectorAll('.dock-item');
+  // EXPLORATION VIEW CAROUSEL (DOTS, SIDE ARROWS, AUTOMATIC CHANGE)
+  // --------------------------------------------------------------------------
+  const exploreSlides = [
+    'assets/explore_sunset_balcony.png', // Slide 0: Sunset Balcony Woman
+    'assets/ocean_terrace_hero.png',     // Slide 1: Circular Lawn Garden Deck
+    'assets/terrace_sofa_deck.png',      // Slide 2: Curved Sofa Terrace Deck
+    'assets/versova-coast.jpg',          // Slide 3: Coastline Sunset
+    'assets/living-room.jpg'             // Slide 4: Horizon Living Room
+  ];
+
+  let currentSlideIndex = 0;
+  let autoSlideTimer = null;
+
+  const carouselDots = document.querySelectorAll('.carousel-dot');
+  const carouselPrevBtn = document.getElementById('carouselPrevBtn');
+  const carouselNextBtn = document.getElementById('carouselNextBtn');
+  const screenArrowLeft = document.getElementById('screenArrowLeft');
+  const screenArrowRight = document.getElementById('screenArrowRight');
+
+  function updateCarouselUI(index) {
+    currentSlideIndex = index;
+    carouselDots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === index);
+    });
+
+    if (heroImg) {
+      heroImg.style.transition = 'opacity 0.65s ease';
+      heroImg.style.opacity = '0.35';
+      setTimeout(() => {
+        heroImg.src = exploreSlides[index];
+        heroImg.style.opacity = '1';
+      }, 200);
+    }
+  }
+
+  function nextSlide() {
+    const nextIdx = (currentSlideIndex + 1) % exploreSlides.length;
+    updateCarouselUI(nextIdx);
+  }
+
+  function prevSlide() {
+    const prevIdx = (currentSlideIndex - 1 + exploreSlides.length) % exploreSlides.length;
+    updateCarouselUI(prevIdx);
+  }
+
+  function resetAutoSlide() {
+    if (autoSlideTimer) clearInterval(autoSlideTimer);
+    autoSlideTimer = setInterval(() => {
+      if (stage.classList.contains('in-explore-mode')) {
+        nextSlide();
+      }
+    }, 4500);
+  }
 
   function openExploreView() {
     stage.classList.add('in-explore-mode');
     mainExploreView.classList.add('active');
+
+    // Start with Slide 0 (Sunset Balcony Woman)
+    updateCarouselUI(0);
+
+    // Start Automatic Image Changing
+    resetAutoSlide();
   }
 
   function closeExploreView() {
     stage.classList.remove('in-explore-mode');
     mainExploreView.classList.remove('active');
+    if (autoSlideTimer) clearInterval(autoSlideTimer);
+    if (heroImg) {
+      heroImg.src = 'assets/ocean_terrace_hero.png';
+    }
     runIntroExperience();
   }
 
-  if (enterBtn) {
-    enterBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openExploreView();
-    });
-  }
-
-  if (backHeroBtn) {
-    backHeroBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      closeExploreView();
-    });
-  }
-
-  // Interactive Gallery Thumbnail Switching
-  galleryThumbs.forEach(thumb => {
-    thumb.addEventListener('click', () => {
-      galleryThumbs.forEach(t => t.classList.remove('active'));
-      thumb.classList.add('active');
-      const newBg = thumb.getAttribute('data-bg');
-      if (newBg && heroImg) {
-        heroImg.style.opacity = '0.4';
-        setTimeout(() => {
-          heroImg.src = newBg;
-          heroImg.style.opacity = '1';
-        }, 250);
-      }
+  // Dots Click Event
+  carouselDots.forEach((dot, idx) => {
+    dot.addEventListener('click', () => {
+      updateCarouselUI(idx);
+      resetAutoSlide();
     });
   });
+
+  // Carousel Arrow Clicks (Bottom Dock)
+  if (carouselPrevBtn) {
+    carouselPrevBtn.addEventListener('click', () => {
+      prevSlide();
+      resetAutoSlide();
+    });
+  }
+  if (carouselNextBtn) {
+    carouselNextBtn.addEventListener('click', () => {
+      nextSlide();
+      resetAutoSlide();
+    });
+  }
+
+  // Floating Screen Side Arrow Clicks
+  if (screenArrowLeft) {
+    screenArrowLeft.addEventListener('click', () => {
+      prevSlide();
+      resetAutoSlide();
+    });
+  }
+  if (screenArrowRight) {
+    screenArrowRight.addEventListener('click', () => {
+      nextSlide();
+      resetAutoSlide();
+    });
+  }
 
   // Interactive Nav Item Switching
   const navBtnItems = document.querySelectorAll('.nav-btn-item, .nav-pill');
@@ -621,19 +699,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Style switcher button clicks (Intro View)
-  styleBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      styleBtns.forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      currentWaveStyle = parseInt(e.target.getAttribute('data-style'), 10);
-      runIntroExperience();
+  if (styleBtns && styleBtns.length) {
+    styleBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        styleBtns.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentWaveStyle = parseInt(e.target.getAttribute('data-style'), 10);
+        runIntroExperience();
+      });
     });
-  });
+  }
 
   // Replay Button
-  replayBtn.addEventListener('click', () => {
-    runIntroExperience();
-  });
+  if (replayBtn) {
+    replayBtn.addEventListener('click', () => {
+      runIntroExperience();
+    });
+  }
 
   // Start Experience
   runIntroExperience();
