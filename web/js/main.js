@@ -691,30 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Interactive Nav Item Switching
   const navBtnItems = document.querySelectorAll('.nav-btn-item, .nav-pill');
-  const exploreCenterContent = document.getElementById('exploreCenterContent');
-  const locationPanel = document.getElementById('locationPanel');
   navBtnItems.forEach(item => {
     item.addEventListener('click', () => {
       navBtnItems.forEach(i => i.classList.remove('active'));
       item.classList.add('active');
-
-      const action = item.getAttribute('data-action');
-      if (action === 'location') {
-        if (exploreCenterContent) exploreCenterContent.style.display = 'none';
-        if (locationPanel) locationPanel.classList.add('active');
-      } else if (action === 'home') {
-        if (locationPanel) locationPanel.classList.remove('active');
-        if (exploreCenterContent) exploreCenterContent.style.display = '';
-      }
-    });
-  });
-
-  // Location Filter Row Switching
-  const locationFilterBtns = document.querySelectorAll('.location-filter-btn');
-  locationFilterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      locationFilterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
     });
   });
 
