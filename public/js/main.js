@@ -2,7 +2,7 @@
 // OCEAN TERRACE RESIDENCES - MULTI-CONTOUR OCEAN WAVE & CURTAIN REVEAL
 // ==========================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+(() => {
   const brandHeader = document.getElementById('brandHeader');
   const imageMask = document.getElementById('imageMask');
   const radiatingAura = document.getElementById('radiatingAura');
@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
     heroContent.classList.remove('revealed');
     if (controlsPanel) controlsPanel.classList.remove('visible');
     if (heroImg) {
-      heroImg.src = 'assets/ocean_terrace_hero.png';
+      heroImg.src = '/assets/ocean_terrace_hero.png';
     }
 
     // STEP 1: Big orig.avif Logo Fades in at Center
@@ -581,11 +581,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // EXPLORATION VIEW CAROUSEL (DOTS, SIDE ARROWS, AUTOMATIC CHANGE)
   // --------------------------------------------------------------------------
   const exploreSlides = [
-    'assets/explore_sunset_balcony.png', // Slide 0: Sunset Balcony Woman
-    'assets/ocean_terrace_hero.png',     // Slide 1: Circular Lawn Garden Deck
-    'assets/terrace_sofa_deck.png',      // Slide 2: Curved Sofa Terrace Deck
-    'assets/versova-coast.jpg',          // Slide 3: Coastline Sunset
-    'assets/living-room.jpg'             // Slide 4: Horizon Living Room
+    '/assets/explore_sunset_balcony.png', // Slide 0: Sunset Balcony Woman
+    '/assets/ocean_terrace_hero.png',     // Slide 1: Circular Lawn Garden Deck
+    '/assets/terrace_sofa_deck.png',      // Slide 2: Curved Sofa Terrace Deck
+    '/assets/versova-coast.jpg',          // Slide 3: Coastline Sunset
+    '/assets/living-room.jpg'             // Slide 4: Horizon Living Room
   ];
 
   let currentSlideIndex = 0;
@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainExploreView.classList.remove('active');
     if (autoSlideTimer) clearInterval(autoSlideTimer);
     if (heroImg) {
-      heroImg.src = 'assets/ocean_terrace_hero.png';
+      heroImg.src = '/assets/ocean_terrace_hero.png';
     }
     runIntroExperience();
   }
@@ -702,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const action = item.getAttribute('data-action');
       if (action === 'brochure') {
-        window.open('assets/beach-queen-brochure.pdf', '_blank');
+        window.open('/assets/beach-queen-brochure.pdf', '_blank');
       } else if (action === 'location') {
         if (exploreCenterContent) exploreCenterContent.style.display = 'none';
         if (locationView) locationView.classList.add('active');
@@ -748,4 +748,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Start Experience
   runIntroExperience();
-});
+})();
