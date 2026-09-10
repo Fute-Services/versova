@@ -702,28 +702,53 @@
 
       const action = item.getAttribute('data-action');
       if (action === 'brochure') {
-        window.open('/assets/beach-queen-brochure.pdf', '_blank');
-      } else if (action === 'location') {
+        window.dispatchEvent(new CustomEvent('open-brochure'));
+        return;
+      }
+
+      if (action === 'location') {
         if (exploreCenterContent) exploreCenterContent.style.display = 'none';
         if (locationView) locationView.classList.add('active');
         if (locationBackdrop) locationBackdrop.classList.add('active');
         if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
-      } else {
+      } else if (action === 'lifestyle') {
         if (locationView) locationView.classList.remove('active');
         if (locationBackdrop) locationBackdrop.classList.remove('active');
         if (exploreCenterContent) exploreCenterContent.style.display = '';
         if (bottomGalleryDock) bottomGalleryDock.style.display = '';
+      } else {
+        if (locationView) locationView.classList.remove('active');
+        if (locationBackdrop) locationBackdrop.classList.remove('active');
+        if (exploreCenterContent) exploreCenterContent.style.display = 'none';
+        if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
       }
     });
   });
 
   // Location Filter Row Switching
   const locationFilterBtns = document.querySelectorAll('.location-filter-btn');
+  const locationPanelImage = document.getElementById('locationPanelImage');
+  const locationFilterImages = {
+    hospitals: '/assets/location-map.png',
+    education: '/assets/location-map.png',
+    connectivity: '/assets/location-map.png',
+    hotels: '/assets/location-map.png',
+    entertainment: '/assets/location-map.png',
+    beaches: '/assets/location-map.png'
+  };
+  const locationPinGroups = document.querySelectorAll('.location-pins');
   locationFilterBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       locationFilterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      if (locationPanelImage) {
+        locationPanelImage.src = locationFilterImages[filter] || '';
+      }
+      locationPinGroups.forEach(group => {
+        group.hidden = group.getAttribute('data-pins-for') !== filter;
+      });
     });
   });
 

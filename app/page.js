@@ -1,8 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Script from "next/script";
+import BrochureFlipbook from "./BrochureFlipbook";
 
 export default function Home() {
+  const [brochureOpen, setBrochureOpen] = useState(false);
+
+  useEffect(() => {
+    const openHandler = () => setBrochureOpen(true);
+    window.addEventListener("open-brochure", openHandler);
+    return () => window.removeEventListener("open-brochure", openHandler);
+  }, []);
+
   return (
     <>
       <div className="stage" id="stage">
@@ -61,25 +71,167 @@ export default function Home() {
 
           <div className="location-backdrop" id="locationBackdrop"></div>
           <div className="location-view" id="locationView">
-            <div className="location-panel" id="locationPanel"></div>
+            <div className="location-panel" id="locationPanel">
+              <img
+                id="locationPanelImage"
+                className="location-panel-img"
+                src="/assets/location-map.png"
+                alt="Nearby hospitals map"
+              />
+              <div className="location-pins" data-pins-for="hospitals" id="locationPinsHospitals">
+                <div className="location-pin" style={{ left: "40.6%", top: "16.47%" }}>
+                  <div className="location-pin-head"></div>
+                  <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                </div>
+                <div className="location-pin" style={{ left: "89.9%", top: "13.2%" }}>
+                  <div className="location-pin-head"></div>
+                  <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                </div>
+              </div>
+
+              <div className="location-pins" data-pins-for="education" id="locationPinsEducation" hidden>
+                {[
+                  ["50.69%", "22.05%"],
+                  ["54.37%", "35.02%"],
+                  ["48.58%", "42.15%"],
+                  ["47.11%", "36.96%"],
+                  ["59.76%", "42.15%"],
+                  ["39.99%", "51.23%"],
+                  ["47.60%", "56.42%"],
+                  ["59.76%", "55.77%"],
+                  ["59.76%", "70.04%"],
+                  ["47.35%", "68.09%"],
+                  ["44.16%", "88.85%"],
+                ].map(([left, top], i) => (
+                  <div className="location-pin" style={{ left, top }} key={i}>
+                    <div className="location-pin-head"></div>
+                    <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="location-pins" data-pins-for="connectivity" id="locationPinsConnectivity" hidden>
+                {[
+                  ["33.37%", "24.64%"],
+                  ["66.49%", "38.26%"],
+                  ["75.47%", "49.68%"],
+                  ["64.03%", "81.06%"],
+                  ["87.10%", "86.25%"],
+                ].map(([left, top], i) => (
+                  <div className="location-pin" style={{ left, top }} key={i}>
+                    <div className="location-pin-head"></div>
+                    <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="location-pins" data-pins-for="hotels" id="locationPinsHotels" hidden>
+                {[
+                  ["38.52%", "60.31%"],
+                  ["90.04%", "36.32%"],
+                  ["90.04%", "47.99%"],
+                  ["76.45%", "77.17%"],
+                ].map(([left, top], i) => (
+                  <div className="location-pin" style={{ left, top }} key={i}>
+                    <div className="location-pin-head"></div>
+                    <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="location-pins" data-pins-for="entertainment" id="locationPinsEntertainment" hidden>
+                {[
+                  ["46.61%", "3.24%"],
+                  ["42.93%", "9.08%"],
+                  ["50.44%", "9.08%"],
+                  ["44.16%", "60.31%"],
+                ].map(([left, top], i) => (
+                  <div className="location-pin" style={{ left, top }} key={i}>
+                    <div className="location-pin-head"></div>
+                    <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="location-pins" data-pins-for="beaches" id="locationPinsBeaches" hidden>
+                {[
+                  ["30.67%", "28.53%"],
+                  ["39.99%", "66.80%"],
+                ].map(([left, top], i) => (
+                  <div className="location-pin" style={{ left, top }} key={i}>
+                    <div className="location-pin-head"></div>
+                    <div className="location-pin-stem" style={{ height: "24px" }}></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="location-nav-row">
             <div className="location-filter-row" id="locationFilterRow">
               <button className="location-filter-btn active" data-filter="hospitals">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"></path>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                  </svg>
+                </span>
                 Hospitals
               </button>
               <button className="location-filter-btn" data-filter="education">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 10L12 5 2 10l10 5 10-5z"></path>
+                    <path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path>
+                  </svg>
+                </span>
                 Education
               </button>
               <button className="location-filter-btn" data-filter="connectivity">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12.5a11 11 0 0 1 14 0"></path>
+                    <path d="M8.5 16a6 6 0 0 1 7 0"></path>
+                    <line x1="12" y1="19.5" x2="12" y2="19.51"></line>
+                  </svg>
+                </span>
                 Connectivity
               </button>
               <button className="location-filter-btn" data-filter="hotels">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"></path>
+                    <path d="M2 20v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3"></path>
+                    <path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path>
+                  </svg>
+                </span>
                 Hotels
               </button>
               <button className="location-filter-btn" data-filter="entertainment">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 5h16v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"></path>
+                    <line x1="4" y1="9" x2="20" y2="9"></line>
+                    <line x1="4" y1="13" x2="20" y2="13"></line>
+                    <line x1="9" y1="5" x2="9" y2="17"></line>
+                    <path d="M9 20h6"></path>
+                  </svg>
+                </span>
                 Entertainment
               </button>
               <button className="location-filter-btn" data-filter="beaches">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 21c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0"></path>
+                    <path d="M12 3v10"></path>
+                    <path d="M3 12c1-5 4.5-9 9-9s8 4 9 9z"></path>
+                  </svg>
+                </span>
                 Beaches
+              </button>
+            </div>
+
+              <button className="location-360-btn" id="location360Btn" title="360° View">
+                <span className="text-360">360°</span>
               </button>
             </div>
           </div>
@@ -224,6 +376,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <BrochureFlipbook open={brochureOpen} onClose={() => setBrochureOpen(false)} />
 
       <Script src="/js/main.js" strategy="afterInteractive" />
     </>

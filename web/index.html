@@ -73,7 +73,24 @@
       <!-- Location Panel (opens center, replaces headline) -->
       <div class="location-backdrop" id="locationBackdrop"></div>
       <div class="location-view" id="locationView">
-        <div class="location-panel" id="locationPanel"></div>
+        <div class="location-panel" id="locationPanel">
+          <img
+            id="locationPanelImage"
+            class="location-panel-img"
+            src="assets/location-map.png"
+            alt="Nearby hospitals map"
+          />
+          <div class="location-pins" data-pins-for="hospitals" id="locationPinsHospitals">
+            <div class="location-pin" style="left: 43.15%; top: 27.5%;">
+              <div class="location-pin-head"></div>
+              <div class="location-pin-stem" style="height: 36px;"></div>
+            </div>
+            <div class="location-pin" style="left: 90.0%; top: 20.5%;">
+              <div class="location-pin-head"></div>
+              <div class="location-pin-stem" style="height: 24px;"></div>
+            </div>
+          </div>
+        </div>
         <div class="location-filter-row" id="locationFilterRow">
           <button class="location-filter-btn active" data-filter="hospitals">Hospitals</button>
           <button class="location-filter-btn" data-filter="education">Education</button>
