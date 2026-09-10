@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
-import BrochureFlipbook from "./BrochureFlipbook";
+import BrochureFlipbook from "./components/BrochureFlipbook";
 
 export default function Home() {
   const [brochureOpen, setBrochureOpen] = useState(false);
