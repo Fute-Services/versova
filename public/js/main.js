@@ -513,34 +513,21 @@
       heroImg.src = '/assets/ocean_terrace_hero.png';
     }
 
-    // STEP 1: Big orig.avif Logo Fades in at Center
-    animationTimeouts.push(setTimeout(() => {
-      if (introLogoContainer) introLogoContainer.classList.add('visible');
-    }, 400));
-
-    // STEP 2: orig.avif Logo fades out
-    animationTimeouts.push(setTimeout(() => {
-      if (introLogoContainer) {
-        introLogoContainer.classList.remove('visible');
-        introLogoContainer.classList.add('fade-out');
-      }
-    }, 2200));
-
-    // STEP 3: "OCEAN TERRACE" text fades in at the CENTER of screen
+    // STEP 3: "BEACH QUEEN · VERSOVA" text fades in at the CENTER of screen
     animationTimeouts.push(setTimeout(() => {
       brandHeader.classList.add('visible');
-    }, 2800));
+    }, 400));
 
-    // STEP 4: "OCEAN TERRACE" text smoothly glides up from Center to TOP
+    // STEP 4: Brand text smoothly glides up from Center to TOP
     animationTimeouts.push(setTimeout(() => {
       brandHeader.classList.add('moved-top');
-    }, 4200));
+    }, 1800));
 
     // STEP 5: Center Circle + Ocean Contour Waves appear in center
     animationTimeouts.push(setTimeout(() => {
       radiatingAura.classList.add('active'); // Cyan contour wave
-      imageMask.classList.add('circle-preview'); // Circle ocean preview
-    }, 4900));
+      imageMask.classList.add('circle-preview'); // Circle beach preview
+    }, 2400));
 
     // STEP 6: Fluid Curtain Reveal ("Parda Khulta Hai" -> Fullscreen Expand)
     animationTimeouts.push(setTimeout(() => {
@@ -548,12 +535,12 @@
       radiatingAura.classList.remove('active');
       radiatingAura.classList.add('fade-out');
       brandHeader.classList.add('mode-fullscreen');
-    }, 7800));
+    }, 5200));
 
     // STEP 7: Reveal Center Headline Typography (Line 1 -> Line 2 -> Line 3)
     animationTimeouts.push(setTimeout(() => {
       heroContent.classList.add('revealed');
-    }, 8800));
+    }, 6200));
 
     // STEP 8: Exactly 1 second after line 3 ("CINEMATIC OCEAN VISTAS") appears, transition to 2nd image page
     const line3 = document.querySelector('.hero-headline .line-3');
@@ -572,7 +559,7 @@
     // Safety fallback timeout in case transitionend is skipped
     animationTimeouts.push(setTimeout(() => {
       openExploreView();
-    }, 14800));
+    }, 12200));
   }
 
   // --------------------------------------------------------------------------
@@ -588,6 +575,14 @@
     '/assets/living-room.jpg'             // Slide 4: Horizon Living Room
   ];
 
+  const exploreCaptions = [
+    { headline: 'A private horizon,<br>entirely your own.', sub: 'Sea-facing four-bedroom residences with only two homes on each floor.' },
+    { headline: 'Where every evening<br>becomes an occasion.', sub: 'Sprawling terraces framed by the endless Arabian Sea.' },
+    { headline: 'Slow mornings,<br>styled in comfort.', sub: 'Private decks designed for stillness, light, and quiet luxury.' },
+    { headline: 'A coastline<br>written in gold.', sub: "Wake up to Versova's signature sunset, every single day." },
+    { headline: 'Interiors that<br>breathe luxury.', sub: 'Sunlit living spaces crafted for effortless elegance.' }
+  ];
+
   let currentSlideIndex = 0;
   let autoSlideTimer = null;
 
@@ -596,6 +591,8 @@
   const carouselNextBtn = document.getElementById('carouselNextBtn');
   const screenArrowLeft = document.getElementById('screenArrowLeft');
   const screenArrowRight = document.getElementById('screenArrowRight');
+  const exploreHeadlineEl = document.querySelector('.explore-headline');
+  const exploreSubheadlineEl = document.querySelector('.explore-subheadline');
 
   function updateCarouselUI(index) {
     currentSlideIndex = index;
@@ -611,6 +608,24 @@
         heroImg.style.opacity = '1';
       }, 200);
     }
+
+    const caption = exploreCaptions[index];
+    if (caption && exploreHeadlineEl && exploreSubheadlineEl) {
+      exploreHeadlineEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      exploreSubheadlineEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      exploreHeadlineEl.style.opacity = '0';
+      exploreSubheadlineEl.style.opacity = '0';
+      exploreHeadlineEl.style.transform = 'translateY(8px)';
+      exploreSubheadlineEl.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        exploreHeadlineEl.innerHTML = caption.headline;
+        exploreSubheadlineEl.textContent = caption.sub;
+        exploreHeadlineEl.style.opacity = '1';
+        exploreSubheadlineEl.style.opacity = '1';
+        exploreHeadlineEl.style.transform = 'translateY(0)';
+        exploreSubheadlineEl.style.transform = 'translateY(0)';
+      }, 260);
+    }
   }
 
   function nextSlide() {
@@ -623,10 +638,12 @@
     updateCarouselUI(prevIdx);
   }
 
+  let isOnHomePage = true;
+
   function resetAutoSlide() {
     if (autoSlideTimer) clearInterval(autoSlideTimer);
     autoSlideTimer = setInterval(() => {
-      if (stage.classList.contains('in-explore-mode')) {
+      if (stage.classList.contains('in-explore-mode') && isOnHomePage) {
         nextSlide();
       }
     }, 4500);
@@ -695,6 +712,20 @@
   const locationView = document.getElementById('locationView');
   const locationBackdrop = document.getElementById('locationBackdrop');
   const bottomGalleryDock = document.getElementById('bottomGalleryDock');
+  const leftLiquidDock = document.getElementById('leftLiquidDock');
+  const rightLiquidDock = document.getElementById('rightLiquidDock');
+  const exploreTagline = document.getElementById('exploreTagline');
+  const viewsBackgroundImage = '/assets/views-tower.png';
+
+  function replayDockAnimation() {
+    [leftLiquidDock, rightLiquidDock].forEach(dock => {
+      if (!dock) return;
+      dock.classList.remove('dock-replay');
+      void dock.offsetWidth; // force reflow so the animation restarts
+      dock.classList.add('dock-replay');
+    });
+  }
+
   navBtnItems.forEach(item => {
     item.addEventListener('click', () => {
       navBtnItems.forEach(i => i.classList.remove('active'));
@@ -706,19 +737,50 @@
         return;
       }
 
+      replayDockAnimation();
+
+      // Reset location panel before applying the new state
+      if (locationView) locationView.classList.remove('active');
+      if (locationBackdrop) locationBackdrop.classList.remove('active');
+
+      // The background image only auto-changes on the home (lifestyle) page
+      isOnHomePage = action === 'lifestyle';
+      if (heroImg && action !== 'findview') heroImg.classList.remove('fit-full');
+      if (exploreTagline && action !== 'findview') exploreTagline.style.display = '';
+      stage.classList.toggle('views-mode', action === 'findview');
+
       if (action === 'location') {
         if (exploreCenterContent) exploreCenterContent.style.display = 'none';
         if (locationView) locationView.classList.add('active');
         if (locationBackdrop) locationBackdrop.classList.add('active');
         if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
+      } else if (action === 'findview') {
+        if (exploreCenterContent) exploreCenterContent.style.display = 'none';
+        if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
+        if (exploreTagline) exploreTagline.style.display = 'none';
+        if (heroImg) {
+          heroImg.style.transition = 'opacity 0.65s ease';
+          heroImg.style.opacity = '0.35';
+          setTimeout(() => {
+            heroImg.src = viewsBackgroundImage;
+            heroImg.classList.add('fit-full');
+            heroImg.style.opacity = '1';
+          }, 200);
+        }
       } else if (action === 'lifestyle') {
-        if (locationView) locationView.classList.remove('active');
-        if (locationBackdrop) locationBackdrop.classList.remove('active');
         if (exploreCenterContent) exploreCenterContent.style.display = '';
         if (bottomGalleryDock) bottomGalleryDock.style.display = '';
+        if (exploreTagline) exploreTagline.style.display = '';
+        if (heroImg) {
+          heroImg.style.transition = 'opacity 0.65s ease';
+          heroImg.style.opacity = '0.35';
+          setTimeout(() => {
+            heroImg.src = exploreSlides[currentSlideIndex];
+            heroImg.classList.remove('fit-full');
+            heroImg.style.opacity = '1';
+          }, 200);
+        }
       } else {
-        if (locationView) locationView.classList.remove('active');
-        if (locationBackdrop) locationBackdrop.classList.remove('active');
         if (exploreCenterContent) exploreCenterContent.style.display = 'none';
         if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
       }

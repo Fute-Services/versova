@@ -18,11 +18,7 @@ export default function Home() {
       <div className="stage" id="stage">
         <div className="bg-layer" id="bgLayer"></div>
 
-        <div className="intro-logo-container" id="introLogoContainer">
-          <img src="/assets/logo.avif" alt="Logo" className="intro-logo-img" />
-        </div>
-
-        <header className="brand-header" id="brandHeader">
+<header className="brand-header" id="brandHeader">
           <div className="brand-text-block">
             <h1 className="brand-title">BEACH QUEEN</h1>
             <span className="brand-subtitle">VERSOVA</span>
@@ -64,6 +60,7 @@ export default function Home() {
               <br />
               entirely your own.
             </h1>
+            <span className="explore-divider"></span>
             <p className="explore-subheadline">
               Sea-facing four-bedroom residences with only two homes on each floor.
             </p>
@@ -71,6 +68,9 @@ export default function Home() {
 
           <div className="location-backdrop" id="locationBackdrop"></div>
           <div className="location-view" id="locationView">
+            <div className="location-top-tagline">
+              <span>Beach Queen · Versova</span>
+            </div>
             <div className="location-panel" id="locationPanel">
               <img
                 id="locationPanelImage"
@@ -93,14 +93,14 @@ export default function Home() {
                 {[
                   ["50.69%", "22.05%"],
                   ["54.37%", "35.02%"],
-                  ["48.58%", "42.15%"],
-                  ["47.11%", "36.96%"],
+                  ["50.20%", "43.00%"],
+                  ["48.00%", "37.30%"],
                   ["59.76%", "42.15%"],
                   ["39.99%", "51.23%"],
-                  ["47.60%", "56.42%"],
+                  ["52.00%", "57.30%"],
                   ["59.76%", "55.77%"],
                   ["59.76%", "70.04%"],
-                  ["47.35%", "68.09%"],
+                  ["51.80%", "67.30%"],
                   ["44.16%", "88.85%"],
                 ].map(([left, top], i) => (
                   <div className="location-pin" style={{ left, top }} key={i}>
@@ -229,10 +229,6 @@ export default function Home() {
                 Beaches
               </button>
             </div>
-
-              <button className="location-360-btn" id="location360Btn" title="360° View">
-                <span className="text-360">360°</span>
-              </button>
             </div>
           </div>
 
@@ -248,17 +244,17 @@ export default function Home() {
                 <span className="nav-btn-label">Lifestyle</span>
               </button>
 
-              <button className="nav-btn-item" data-action="location" title="Where Sea Meets City">
+              <button className="nav-btn-item" data-action="location" title="Horizon">
                 <div className="nav-icon-disc">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
                 </div>
-                <span className="nav-btn-label">Where Sea Meets City</span>
+                <span className="nav-btn-label">Horizon</span>
               </button>
 
-              <button className="nav-btn-item" data-action="findview" title="Find Their View">
+              <button className="nav-btn-item" data-action="findview" title="Views">
                 <div className="nav-icon-disc">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="4" y="2" width="16" height="20" rx="1"></rect>
@@ -268,7 +264,7 @@ export default function Home() {
                     <line x1="8" y1="18" x2="12" y2="18"></line>
                   </svg>
                 </div>
-                <span className="nav-btn-label">Find Their View</span>
+                <span className="nav-btn-label">Views</span>
               </button>
 
               <button className="nav-btn-item" data-action="brochure" title="Brochure">
@@ -297,7 +293,7 @@ export default function Home() {
                 <span className="nav-btn-label">Visionaries</span>
               </button>
 
-              <button className="nav-btn-item" data-action="walkthrough" title="Walk Through">
+              <button className="nav-btn-item" data-action="walkthrough" title="Tour">
                 <div className="nav-icon-disc">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="13" cy="4" r="2"></circle>
@@ -307,10 +303,10 @@ export default function Home() {
                     <path d="M8 12l-2 2 1 4"></path>
                   </svg>
                 </div>
-                <span className="nav-btn-label">Walk Through</span>
+                <span className="nav-btn-label">Tour</span>
               </button>
 
-              <button className="nav-btn-item" data-action="journey" title="Continue the Journey">
+              <button className="nav-btn-item" data-action="journey" title="Journey">
                 <div className="nav-icon-disc">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="3" width="18" height="18" rx="2"></rect>
@@ -318,7 +314,14 @@ export default function Home() {
                     <polyline points="21 15 16 10 5 21"></polyline>
                   </svg>
                 </div>
-                <span className="nav-btn-label">Continue the Journey</span>
+                <span className="nav-btn-label">Journey</span>
+              </button>
+
+              <button className="nav-btn-item" id="location360Btn" title="360° View">
+                <div className="nav-icon-disc disc-360">
+                  <span className="text-360">360°</span>
+                </div>
+                <span className="nav-btn-label">360° View</span>
               </button>
             </div>
           </aside>
