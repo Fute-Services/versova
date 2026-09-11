@@ -227,9 +227,16 @@ html, body {
 }
 
 .hero-image.fit-full {
-  object-fit: contain;
-  background: #0a0a0a;
+  object-fit: cover;
+  object-position: center 30%;
+  width: 100vw;
+  height: 100vh;
   transform: scale(1);
+  filter: none;
+}
+
+.stage.views-mode .image-mask::before {
+  display: none;
 }
 
 .image-scrim {
@@ -264,9 +271,63 @@ html, body {
   opacity: 1;
 }
 
-/* Views page has no overlaid text, so keep the background bright and undimmed */
-.stage.views-mode .image-scrim {
+/* Views and Gallery pages have no overlaid text, so keep the background 100% bright, crisp, and undimmed */
+.stage.views-mode .image-scrim,
+.stage.gallery-mode .image-scrim {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+@keyframes galleryKenBurns {
+  0% {
+    transform: scale(1) translate(0%, 0%);
+  }
+  50% {
+    transform: scale(1.07) translate(-1.2%, -0.8%);
+  }
+  100% {
+    transform: scale(1.03) translate(1.2%, 0.8%);
+  }
+}
+
+.stage.gallery-mode .hero-image {
+  filter: none !important;
+  opacity: 1 !important;
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
+  object-fit: cover !important;
+  will-change: transform, opacity;
+}
+
+.stage.gallery-mode .hero-image.animate-kenburns {
+  animation: galleryKenBurns 16s ease-in-out infinite alternate !important;
+}
+
+.stage.gallery-mode .hero-image.gallery-transitioning {
+  opacity: 0.15 !important;
+  transform: scale(1.05) !important;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out !important;
+}
+
+/* Pages without dedicated content (Visionaries, Tour, 360°) get a plain cream backdrop */
+.cream-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #efe6d3;
   opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.stage.cream-mode .cream-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.stage.cream-mode .image-mask {
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 /* ==========================================================================
@@ -694,7 +755,8 @@ html, body {
 }
 
 
-.location-filter-row {
+.location-filter-row,
+.gallery-filter-row {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -709,6 +771,62 @@ html, body {
     inset 0 0 0 1px rgba(0, 0, 0, 0.6),
     0 14px 30px rgba(0, 0, 0, 0.6),
     0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   GALLERY PANEL (Center Tab)
+   ========================================================================== */
+/* Gallery is a fullscreen image swap (like Views) with a floating bottom control bar — no card/frame */
+.gallery-view {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s var(--ease-out-expo);
+}
+
+.gallery-view.active {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.gallery-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0 2px;
+  background: radial-gradient(circle at 35% 25%, #5a5a5c 0%, #232325 55%, #050505 100%);
+  border: 1px solid rgba(120, 120, 124, 0.4);
+  box-shadow:
+    inset 0 1.5px 1.5px rgba(100, 100, 105, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.75),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.4s ease;
+}
+
+.gallery-arrow-btn:hover {
+  transform: scale(1.1);
+  background: radial-gradient(circle at 35% 25%, #6a6a6c 0%, #2b2b2d 55%, #0a0a0a 100%);
+}
+
+.gallery-prev-btn[hidden],
+.gallery-next-btn[hidden] {
+  display: none;
 }
 
 .location-filter-btn {
@@ -1139,6 +1257,15 @@ html, body {
   transform: translateX(-50%) translateY(80px);
 }
 
+/* CSS-level backup: force-hidden on every non-home page, regardless of inline JS state */
+.stage.gallery-mode .bottom-gallery-dock,
+.stage.views-mode .bottom-gallery-dock,
+.stage.cream-mode .bottom-gallery-dock {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(80px);
+}
+
 /* ==========================================================================
    MINIMALIST DOTS & CAROUSEL NAVIGATION CONTROLS
    ========================================================================== */
@@ -1190,11 +1317,16 @@ html, body {
   color: #ffffff;
 }
 
-.carousel-dots-track {
+.carousel-dots-track,
+.gallery-dots-track {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 0 4px;
+}
+
+.gallery-dots-track:empty {
+  display: none;
 }
 
 .carousel-dot {
@@ -1601,4 +1733,87 @@ html, body {
 .brochure-close-btn:hover {
   background: #ff2d3f;
   transform: scale(1.05);
+}
+
+/* ==========================================================================
+   360° INTERACTIVE PANORAMA VIEW
+   ========================================================================== */
+.panorama-360-view {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050b14;
+  cursor: grab;
+}
+
+.panorama-360-view.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.panorama-360-view:active {
+  cursor: grabbing;
+}
+
+.panorama-canvas-container {
+  position: absolute;
+  width: 140vw;
+  height: 120vh;
+  top: -10vh;
+  left: -20vw;
+  will-change: transform;
+  transition: transform 0.15s ease-out;
+}
+
+.panorama-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  filter: brightness(1.06) contrast(1.04) saturate(1.08);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.panorama-hud-badge {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(10, 20, 32, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 40px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.panorama-hud-icon {
+  display: flex;
+  align-items: center;
+  color: #48cae4;
+  animation: pulse360 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse360 {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.15); }
 }

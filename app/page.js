@@ -17,6 +17,7 @@ export default function Home() {
     <>
       <div className="stage" id="stage">
         <div className="bg-layer" id="bgLayer"></div>
+        <div className="cream-backdrop" id="creamBackdrop"></div>
 
 <header className="brand-header" id="brandHeader">
           <div className="brand-text-block">
@@ -232,6 +233,72 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="gallery-view" id="galleryView">
+            <div className="gallery-dots-track" id="galleryDotsTrack"></div>
+            <div className="gallery-filter-row" id="galleryFilterRow">
+              <button className="gallery-arrow-btn gallery-prev-btn" id="galleryPrevBtn" title="Previous Image" aria-label="Previous Image">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button className="location-filter-btn active" data-gallery-filter="interior">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"></path>
+                    <path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+                    <path d="M4 18v2"></path>
+                    <path d="M20 18v2"></path>
+                  </svg>
+                </span>
+                Interior
+              </button>
+              <button className="location-filter-btn" data-gallery-filter="exterior">
+                <span className="filter-icon-disc">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                    <path d="M9 22v-4h6v4"></path>
+                    <path d="M8 6h.01"></path>
+                    <path d="M12 6h.01"></path>
+                    <path d="M16 6h.01"></path>
+                    <path d="M8 10h.01"></path>
+                    <path d="M12 10h.01"></path>
+                    <path d="M16 10h.01"></path>
+                    <path d="M8 14h.01"></path>
+                    <path d="M12 14h.01"></path>
+                    <path d="M16 14h.01"></path>
+                  </svg>
+                </span>
+                Exterior
+              </button>
+              <button className="gallery-arrow-btn gallery-next-btn" id="galleryNextBtn" title="Next Image" aria-label="Next Image">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div className="panorama-360-view" id="panorama360View">
+            <div className="panorama-canvas-container" id="panoramaContainer">
+              <img
+                src="/assets/panorama_360.jpg"
+                alt="360 Panorama View"
+                className="panorama-img"
+                id="panoramaImg"
+              />
+            </div>
+            <div className="panorama-hud-badge">
+              <span className="panorama-hud-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                  <path d="M2 12h20"></path>
+                </svg>
+              </span>
+              <span className="panorama-hud-text">Interactive 360° Panoramic Vistas · Drag / Move to Pan</span>
+            </div>
+          </div>
+
           <aside className="left-liquid-dock" id="leftLiquidDock">
             <div className="dock-pill-track vertical-left-track">
               <button className="nav-btn-item active" data-action="lifestyle" title="Lifestyle">
@@ -306,7 +373,7 @@ export default function Home() {
                 <span className="nav-btn-label">Tour</span>
               </button>
 
-              <button className="nav-btn-item" data-action="journey" title="Journey">
+              <button className="nav-btn-item" data-action="gallery" title="Gallery">
                 <div className="nav-icon-disc">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="3" width="18" height="18" rx="2"></rect>
@@ -314,10 +381,10 @@ export default function Home() {
                     <polyline points="21 15 16 10 5 21"></polyline>
                   </svg>
                 </div>
-                <span className="nav-btn-label">Journey</span>
+                <span className="nav-btn-label">Gallery</span>
               </button>
 
-              <button className="nav-btn-item" id="location360Btn" title="360° View">
+              <button className="nav-btn-item" id="location360Btn" data-action="360" title="360° View">
                 <div className="nav-icon-disc disc-360">
                   <span className="text-360">360°</span>
                 </div>

@@ -569,7 +569,7 @@
   // --------------------------------------------------------------------------
   const exploreSlides = [
     '/assets/explore_sunset_balcony.png', // Slide 0: Sunset Balcony Woman
-    '/assets/ocean_terrace_hero.png',     // Slide 1: Circular Lawn Garden Deck
+    '/assets/blue_ocean_terrace.jpg',     // Slide 1: Curved Sea-Facing Deck
     '/assets/terrace_sofa_deck.png',      // Slide 2: Curved Sofa Terrace Deck
     '/assets/versova-coast.jpg',          // Slide 3: Coastline Sunset
     '/assets/living-room.jpg'             // Slide 4: Horizon Living Room
@@ -711,11 +711,33 @@
   const exploreCenterContent = document.getElementById('exploreCenterContent');
   const locationView = document.getElementById('locationView');
   const locationBackdrop = document.getElementById('locationBackdrop');
+  const galleryView = document.getElementById('galleryView');
+  const galleryDotsTrack = document.getElementById('galleryDotsTrack');
+  const galleryPrevBtn = document.getElementById('galleryPrevBtn');
+  const galleryNextBtn = document.getElementById('galleryNextBtn');
   const bottomGalleryDock = document.getElementById('bottomGalleryDock');
   const leftLiquidDock = document.getElementById('leftLiquidDock');
   const rightLiquidDock = document.getElementById('rightLiquidDock');
   const exploreTagline = document.getElementById('exploreTagline');
   const viewsBackgroundImage = '/assets/views-tower.png';
+  const galleryImages = {
+    interior: [
+      '/assets/living-room.jpg',
+      '/assets/interior_master_bedroom.jpg',
+      '/assets/interior_luxury_kitchen.jpg',
+      '/assets/interior_spa_bathroom.jpg'
+    ],
+    exterior: [
+      '/assets/exterior_ocean_tower.jpg',
+      '/assets/exterior_infinity_pool.jpg',
+      '/assets/exterior_grand_entrance.jpg',
+      '/assets/exterior_rooftop_lounge.jpg',
+      '/assets/legacy-archway.jpg',
+      '/assets/balcony_woman_hero.jpg'
+    ]
+  };
+  let currentGalleryCategory = 'interior';
+  let currentGalleryIndex = 0;
 
   function replayDockAnimation() {
     [leftLiquidDock, rightLiquidDock].forEach(dock => {
@@ -723,6 +745,102 @@
       dock.classList.remove('dock-replay');
       void dock.offsetWidth; // force reflow so the animation restarts
       dock.classList.add('dock-replay');
+    });
+  }
+
+  let galleryAutoTimer = null;
+
+  function resetGalleryAutoPlay() {
+    stopGalleryAutoPlay();
+    galleryAutoTimer = setInterval(() => {
+      if (stage.classList.contains('gallery-mode')) {
+        const images = galleryImages[currentGalleryCategory] || [];
+        if (images.length > 1) {
+          goToGalleryIndex(currentGalleryIndex + 1);
+        }
+      }
+    }, 4800);
+  }
+
+  function stopGalleryAutoPlay() {
+    if (galleryAutoTimer) {
+      clearInterval(galleryAutoTimer);
+      galleryAutoTimer = null;
+    }
+  }
+
+  function triggerGalleryAnimation() {
+    if (!heroImg) return;
+    heroImg.classList.remove('animate-kenburns');
+    void heroImg.offsetWidth; // force reflow so animation restarts smoothly
+    heroImg.classList.add('animate-kenburns');
+  }
+
+  function setHeroImage(src) {
+    if (!heroImg) return;
+    if (stage.classList.contains('gallery-mode')) {
+      heroImg.classList.add('gallery-transitioning');
+      setTimeout(() => {
+        heroImg.src = src;
+        heroImg.classList.remove('gallery-transitioning');
+        triggerGalleryAnimation();
+      }, 150);
+    } else {
+      heroImg.classList.remove('animate-kenburns');
+      heroImg.style.transition = 'opacity 0.35s ease';
+      heroImg.style.opacity = '0.6';
+      setTimeout(() => {
+        heroImg.src = src;
+        heroImg.style.opacity = '1';
+      }, 120);
+    }
+  }
+
+  function goToGalleryIndex(idx) {
+    const images = galleryImages[currentGalleryCategory] || [];
+    if (!images.length) return;
+    currentGalleryIndex = (idx + images.length) % images.length;
+    setHeroImage(images[currentGalleryIndex]);
+    renderGalleryDots();
+  }
+
+  function renderGalleryDots() {
+    if (!galleryDotsTrack) return;
+    const images = galleryImages[currentGalleryCategory] || [];
+    galleryDotsTrack.innerHTML = '';
+    if (galleryPrevBtn) galleryPrevBtn.hidden = false;
+    if (galleryNextBtn) galleryNextBtn.hidden = false;
+    if (images.length <= 1) return;
+    images.forEach((_, idx) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (idx === currentGalleryIndex ? ' active' : '');
+      dot.setAttribute('aria-label', 'Gallery image ' + (idx + 1));
+      dot.addEventListener('click', () => {
+        goToGalleryIndex(idx);
+        resetGalleryAutoPlay();
+      });
+      galleryDotsTrack.appendChild(dot);
+    });
+  }
+
+  function showGalleryCategory(category) {
+    currentGalleryCategory = category;
+    currentGalleryIndex = 0;
+    setHeroImage(galleryImages[category][0]);
+    renderGalleryDots();
+    resetGalleryAutoPlay();
+  }
+
+  if (galleryPrevBtn) {
+    galleryPrevBtn.addEventListener('click', () => {
+      goToGalleryIndex(currentGalleryIndex - 1);
+      resetGalleryAutoPlay();
+    });
+  }
+  if (galleryNextBtn) {
+    galleryNextBtn.addEventListener('click', () => {
+      goToGalleryIndex(currentGalleryIndex + 1);
+      resetGalleryAutoPlay();
     });
   }
 
@@ -739,17 +857,34 @@
 
       replayDockAnimation();
 
-      // Reset location panel before applying the new state
+      // Reset panels before applying new state
       if (locationView) locationView.classList.remove('active');
       if (locationBackdrop) locationBackdrop.classList.remove('active');
+      if (galleryView) galleryView.classList.remove('active');
+      if (panorama360View) panorama360View.classList.remove('active');
+      stop360AutoRotate();
+      if (action !== 'gallery') stopGalleryAutoPlay();
 
       // The background image only auto-changes on the home (lifestyle) page
       isOnHomePage = action === 'lifestyle';
       if (heroImg && action !== 'findview') heroImg.classList.remove('fit-full');
-      if (exploreTagline && action !== 'findview') exploreTagline.style.display = '';
       stage.classList.toggle('views-mode', action === 'findview');
+      stage.classList.toggle('gallery-mode', action === 'gallery');
+      stage.classList.toggle('cream-mode', !['lifestyle', 'location', 'findview', 'gallery', '360'].includes(action));
+      if (exploreTagline) exploreTagline.style.display = action === 'lifestyle' ? '' : 'none';
 
-      if (action === 'location') {
+      if (action === '360') {
+        if (exploreCenterContent) exploreCenterContent.style.display = 'none';
+        if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
+        if (exploreTagline) exploreTagline.style.display = 'none';
+        if (panorama360View) panorama360View.classList.add('active');
+        start360AutoRotate();
+      } else if (action === 'gallery') {
+        if (exploreCenterContent) exploreCenterContent.style.display = 'none';
+        if (bottomGalleryDock) bottomGalleryDock.style.display = 'none';
+        if (galleryView) galleryView.classList.add('active');
+        showGalleryCategory('interior');
+      } else if (action === 'location') {
         if (exploreCenterContent) exploreCenterContent.style.display = 'none';
         if (locationView) locationView.classList.add('active');
         if (locationBackdrop) locationBackdrop.classList.add('active');
@@ -787,8 +922,79 @@
     });
   });
 
+  // --------------------------------------------------------------------------
+  // 360° INTERACTIVE PANORAMA CONTROLLER
+  // --------------------------------------------------------------------------
+  const panorama360View = document.getElementById('panorama360View');
+  const panoramaContainer = document.getElementById('panoramaContainer');
+  let panX = 0, panY = 0, isPanning = false, panStartX = 0, panStartY = 0;
+  let autoRotateAngle = 0;
+  let autoRotateTimer = null;
+
+  function updatePanoramaTransform() {
+    if (!panoramaContainer) return;
+    const autoOffset = Math.sin(autoRotateAngle) * 35;
+    panoramaContainer.style.transform = `translate3d(${panX + autoOffset}px, ${panY}px, 0) scale(1.06)`;
+  }
+
+  function start360AutoRotate() {
+    stop360AutoRotate();
+    autoRotateTimer = setInterval(() => {
+      if (!isPanning && panorama360View && panorama360View.classList.contains('active')) {
+        autoRotateAngle += 0.02;
+        updatePanoramaTransform();
+      }
+    }, 30);
+  }
+
+  function stop360AutoRotate() {
+    if (autoRotateTimer) {
+      clearInterval(autoRotateTimer);
+      autoRotateTimer = null;
+    }
+  }
+
+  if (panorama360View) {
+    panorama360View.addEventListener('mousedown', (e) => {
+      isPanning = true;
+      panStartX = e.clientX - panX;
+      panStartY = e.clientY - panY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      panX = Math.max(-280, Math.min(280, e.clientX - panStartX));
+      panY = Math.max(-120, Math.min(120, e.clientY - panStartY));
+      updatePanoramaTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+    });
+
+    // Touch support
+    panorama360View.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isPanning = true;
+        panStartX = e.touches[0].clientX - panX;
+        panStartY = e.touches[0].clientY - panY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isPanning || e.touches.length !== 1) return;
+      panX = Math.max(-280, Math.min(280, e.touches[0].clientX - panStartX));
+      panY = Math.max(-120, Math.min(120, e.touches[0].clientY - panStartY));
+      updatePanoramaTransform();
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      isPanning = false;
+    });
+  }
+
   // Location Filter Row Switching
-  const locationFilterBtns = document.querySelectorAll('.location-filter-btn');
+  const locationFilterBtns = document.querySelectorAll('#locationFilterRow .location-filter-btn');
   const locationPanelImage = document.getElementById('locationPanelImage');
   const locationFilterImages = {
     hospitals: '/assets/location-map.png',
@@ -811,6 +1017,18 @@
       locationPinGroups.forEach(group => {
         group.hidden = group.getAttribute('data-pins-for') !== filter;
       });
+    });
+  });
+
+  // Gallery Filter Row Switching (Interior / Exterior)
+  const galleryFilterBtns = document.querySelectorAll('#galleryFilterRow .location-filter-btn');
+  galleryFilterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryFilterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-gallery-filter');
+      showGalleryCategory(filter);
     });
   });
 
